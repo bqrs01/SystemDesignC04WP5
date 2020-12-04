@@ -1,0 +1,1 @@
+def det_launch
