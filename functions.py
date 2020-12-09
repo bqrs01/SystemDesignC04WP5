@@ -55,12 +55,13 @@ def det_launch_loads(material, L, R, t_1, t_2, M_fuel, A_Z):
         counter += 1
         t += 0.0001
         # First calculate the initial mass of fuel tank mass plus fuel mass
-        M_total = (2 * pi * R * t * density) + M_fuel
+        M_total = (2 * pi * R * t * density) + M_fuel 
         # Due to assumption, compressive load at the ends is the M_total time the max acceleration in z-direction
         F_z = M_total * A_Z
-        F_int_pressure_tension = (p - 101325) * pi * R**2  
+        #F_int_pressure_tension = (p - 101325) * pi * R**2  
         # Possible if we want to consider internal pressure that applies tension
-        F_z_total = F_z - F_int_pressure_tension
+        #F_z_total = F_z - F_int_pressure_tension
+        F_z_total = 2
         if F_z_total < 0:
             print(F_z_total)
             safe = True
@@ -81,7 +82,7 @@ def det_launch_loads(material, L, R, t_1, t_2, M_fuel, A_Z):
                 # Thirdly we find the value of Q
             Q = (p / E_modulus) * (R / t)**2
                 # Finnaly we find sigma_crit_shell_buckling
-            sigma_crit_shell_buckling = (1.983 - 0.983 * e^(-23.14*Q)) * k * ((pi * E_modulus) / (12 * (1 - v **2))) * (t / L)**2
+            sigma_crit_shell_buckling = (1.983 - 0.983 * e**(-23.14*Q)) * k * ((pi * E_modulus) / (12 * (1 - v **2))) * (t / L)**2
             
             #Comparing the stresses with material yield stress taking a 5% safety margin
             MS_column_buckling =  (yield_stress  / sigma_crit_column_buckling) - 1
@@ -93,5 +94,8 @@ def det_launch_loads(material, L, R, t_1, t_2, M_fuel, A_Z):
         print("safe. t =", t)
     else:
         print("not safe.")
-        
-    pass
+    
+def attachment_mass(F_comp, N_attach): 
+    # takes total compressive force as input, and returns mass of one attachment
+    M_attach = (F_comp / N_attach) * (0.624) / 12100
+    return M_attach
